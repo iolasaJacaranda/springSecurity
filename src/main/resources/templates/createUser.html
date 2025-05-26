@@ -1,0 +1,35 @@
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layout.html">
+<div th:fragment="mainContent">
+    <h2 th:text="${action == 'add'} ? 'Create New User' : 'Edit User'"></h2>
+
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <form th:action="${action == 'add'} ? @{/users/create} : @{/users/edit/{id}(id=${user.id})}"
+          th:object="${user}" method="post">
+          
+        <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" th:field="*{username}" class="form-control"/>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" th:field="*{email}" class="form-control"/>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" th:field="*{password}" class="form-control"/>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <input type="text" th:field="*{firstName}" class="form-control"/>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Apellidos</label>
+            <input type="text" th:field="*{lastName}" class="form-control"/>
+        </div>
+
+        <button type="submit" class="btn btn-primary" 
+                th:text="${action == 'add'} ? 'Create' : 'Update'"></button>
+        <a th:href="@{/users}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

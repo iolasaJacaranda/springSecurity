@@ -1,0 +1,36 @@
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layout.html">
+<div th:fragment="mainContent">
+    <h2>Lista de libros</h2>
+
+    <a th:href="@{/books/create}" class="btn btn-primary mb-3">Añadir nuevo libro</a>
+
+     <table class="table table-striped">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Titulo</th>
+            <th>Autor</th>
+            <th>ISBN</th>
+            <th>Fecha Publicación</th>
+            <th>Género</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="book : ${bookList}">
+            <td th:text="${book.id}"></td>
+            <td th:text="${book.title}"></td>
+            <td th:text="${book.author}"></td>
+            <td th:text="${book.isbn}"></td>
+            <td th:text="${book.publicationDate}"></td>
+            <td th:text="${book.genre}"></td>
+            <td>
+                <a th:href="@{/books/edit/{id}(id=${book.id})}" class="btn btn-warning btn-sm">Edit</a>
+                <a th:href="@{/books/delete/{id}(id=${book.id})}" class="btn btn-danger btn-sm"
+                   onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>  
+</div>
+
