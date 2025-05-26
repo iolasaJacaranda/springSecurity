@@ -39,7 +39,13 @@ public class SecurityConfig {
 			requests.requestMatchers("/").permitAll()
 			.requestMatchers("/webjars/**").permitAll()
 			.requestMatchers("/books").authenticated()
+			.requestMatchers("/books/create").hasAnyAuthority("user","admin")
+			.requestMatchers("/books/edit").hasAnyAuthority("user","admin")
+			.requestMatchers("/books/delete/**").hasAuthority("admin")	
 			.requestMatchers("/users").authenticated()
+			.requestMatchers("/users/create").hasAnyAuthority("user","admin")
+			.requestMatchers("/users/edit").hasAnyAuthority("user","admin")
+			.requestMatchers("/users/delete/**").hasAuthority("admin")	
 			.requestMatchers("/error").permitAll()
 			.anyRequest().denyAll();
 		}).formLogin((form) -> form
