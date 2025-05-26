@@ -1,9 +1,12 @@
 package com.jacaranda.security.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.jacaranda.security.exception.UserException;
@@ -11,17 +14,21 @@ import com.jacaranda.security.model.User;
 import com.jacaranda.security.repository.UserRepository;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService{
 
 	@Autowired
     private  UserRepository userRepository;
 
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
   
     // Crear un nuevo usuario
     public User createUser(User user) throws UserException {
     	if (user.getId()!= null && getUserById(user.getId())== null) {
     		throw new UserException("Usuario ya existente");	
     	}
+    	user.setPassword(passwordEncoder.encode(user.getPassword()));
+		user.setRole("user");
         return userRepository.save(user);
     }
 
@@ -48,6 +55,7 @@ public class UserService {
         user.setPassword(updatedUser.getPassword());
         user.setFirstName(updatedUser.getFirstName());
         user.setLastName(updatedUser.getLastName());
+        user.setRole(updatedUser.getRole());
         
         return userRepository.save(user);
     }
@@ -59,4 +67,18 @@ public class UserService {
     	}
         userRepository.deleteById(id);
     }
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		
+		List<User> listUser = userRepository.findByUsername(username);
+		if (listUser.size() == 0) {
+			throw new UsernameNotFoundException("Usuario no encontrado");
+		}else if (listUser.size() > 1) {
+			throw new UsernameNotFoundException("Mas de un usuario con el username");
+
+		}
+		
+		return listUser.get(0);
+	}
 }

@@ -1,8 +1,15 @@
 package com.jacaranda.security.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,9 +21,11 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "usuario")
-public class User {
+public class User  implements UserDetails{
 
-    @Id
+    private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -37,9 +46,22 @@ public class User {
 
     @Column(name="fecha_registro")
     private LocalDateTime registrationDate;
+    
+    @Column(name="role")
+    private String role;
+    
 
     @OneToMany(mappedBy = "user")
     private Set<UserBook> userBooks;
+
+    
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
 
 	public Long getId() {
 		return id;
@@ -122,5 +144,12 @@ public class User {
 		return Objects.equals(id, other.id);
 	}
 
-   
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+
+		List<SimpleGrantedAuthority> listRole = new ArrayList<SimpleGrantedAuthority>();
+		listRole.add(new SimpleGrantedAuthority(this.role));
+		return listRole;
+	}
+	
 }
