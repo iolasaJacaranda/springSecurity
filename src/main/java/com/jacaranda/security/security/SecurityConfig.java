@@ -38,8 +38,10 @@ public class SecurityConfig {
 		http.authorizeHttpRequests((requests) -> {
 			requests.requestMatchers("/").permitAll()
 			.requestMatchers("/webjars/**").permitAll()
-			.requestMatchers("/books").authenticated()
-			.requestMatchers("/users").authenticated()
+			.requestMatchers("/books/delete").hasAuthority("admin")
+			.requestMatchers("/books/**").authenticated()
+			.requestMatchers("/users/delete").hasAuthority("admin")
+			.requestMatchers("/users/**").authenticated()
 			.requestMatchers("/error").permitAll()
 			.anyRequest().denyAll();
 		}).formLogin((form) -> form
